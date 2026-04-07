@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataGuard - Cybersecurity Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="background-grid"></div>
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <span class="logo-icon">🧠</span>
+            <h1 class="logo-text">DATA<br/>GUARD</h1>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-page="dashboard">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" data-page="agents">
+                <span class="nav-icon">🤖</span>
+                <span class="nav-label">Agents</span>
+            </a>
+            <a href="#" class="nav-item" data-page="events">
+                <span class="nav-icon">📜</span>
+                <span class="nav-label">Events</span>
+            </a>
+            <a href="#" class="nav-item" data-page="commands">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-label">Commands</span>
+            </a>
+            <a href="#" class="nav-item" data-page="statistics">
+                <span class="nav-icon">📈</span>
+                <span class="nav-label">Statistics</span>
+            </a>
+            <a href="#" class="nav-item" data-page="stream">
+                <span class="nav-icon">⚡</span>
+                <span class="nav-label">Live Stream</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Top Header Bar -->
+    <header class="top-header">
+        <div class="header-left">
+            <div class="search-box">
+                <input type="text" id="pathInput" placeholder="Enter folder path to monitor..." class="glass-input">
+            </div>
+            <select id="agentSelect" class="glass-select">
+                <option value="">Select Agent</option>
+            </select>
+            <button id="startMonitorBtn" class="btn btn-primary">
+                <span class="btn-icon">▶</span>
+                Start Monitoring
+            </button>
+            <button id="stopMonitorBtn" class="btn btn-secondary">
+                <span class="btn-icon">⏹️</span>
+                Stop Monitoring
+            </button>
+        </div>
+        <div class="header-right">
+            <div class="connection-status" id="connectionStatus">
+                <span class="status-dot connected"></span>
+                <span class="status-text">Connected</span>
+            </div>
+            <div class="user-avatar">
+                <span>👤</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Content -->
+    <main class="main-content">
+        <!-- Stats Cards -->
+        <section class="stats-grid">
+            <div class="stat-card glass-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #00fff7, #0077ff);">
+                    <span>🟢</span>
+                </div>
+                <div class="stat-info">
+                    <h3 class="stat-label">Active Agents</h3>
+                    <p class="stat-value" id="activeAgents">0</p>
+                </div>
+            </div>
+            <div class="stat-card glass-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #a800ff, #0077ff);">
+                    <span>📊</span>
+                </div>
+                <div class="stat-info">
+                    <h3 class="stat-label">Total Events</h3>
+                    <p class="stat-value" id="totalEvents">0</p>
+                </div>
+            </div>
+            <div class="stat-card glass-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #ff00ff, #00fff7);">
+                    <span>🔌</span>
+                </div>
+                <div class="stat-info">
+                    <h3 class="stat-label">USB Activities</h3>
+                    <p class="stat-value" id="usbActivities">0</p>
+                </div>
+            </div>
+            <div class="stat-card glass-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #0077ff, #a800ff);">
+                    <span>👁️</span>
+                </div>
+                <div class="stat-info">
+                    <h3 class="stat-label">Monitored Folders</h3>
+                    <p class="stat-value" id="monitoredFolders">0</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Two Column Layout -->
+        <section class="content-grid">
+            <!-- Left Column: Event Feed -->
+            <div class="event-feed-container">
+                <div class="panel-header glass-card">
+                    <h2>⚡ Real-Time Event Feed</h2>
+                    <div class="panel-controls">
+                        <button class="btn-icon-small" id="pauseStreamBtn" title="Pause Stream">⏸️</button>
+                        <button class="btn-icon-small" id="filterEventsBtn" title="Filter Events">🔍</button>
+                        <button class="btn-icon-small" id="clearEventsBtn" title="Clear Events">🗑️</button>
+                    </div>
+                </div>
+                <div class="event-feed glass-card" id="eventFeed">
+                    <!-- Events will be populated here -->
+                </div>
+            </div>
+
+            <!-- Right Column: Agents & Console -->
+            <div class="right-column">
+                <!-- Agent List -->
+                <div class="agent-list-container">
+                    <div class="panel-header glass-card">
+                        <h2>🤖 Connected Agents</h2>
+                        <button class="btn-icon-small" id="refreshAgentsBtn" title="Refresh Agents">🔄</button>
+                    </div>
+                    <div class="agent-list" id="agentList">
+                        <!-- Agents will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Recent File Changes: Created & Moved -->
+                <div class="recent-files-container">
+                    <div class="panel-header glass-card">
+                        <h2>📁 Recent File Changes</h2>
+                    </div>
+                    <div class="recent-files glass-card">
+                        <div class="recent-section">
+                            <h3>Files Created</h3>
+                            <ul id="createdFilesList" class="recent-list">
+                                <!-- Created files appear here -->
+                            </ul>
+                        </div>
+                        <div class="recent-section">
+                            <h3>Files Moved</h3>
+                            <ul id="movedFilesList" class="recent-list">
+                                <!-- Moved files appear here -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Command Console -->
+                <div class="command-console-container">
+                    <div class="panel-header glass-card">
+                        <h2>⚙️ Command Console</h2>
+                    </div>
+                    <div class="command-console glass-card">
+                        <div class="console-log" id="consoleLog">
+                            <p class="console-line">DataGuard Console v1.0 initialized...</p>
+                            <p class="console-line">Awaiting commands...</p>
+                        </div>
+                        <div class="console-actions">
+                            <button class="btn btn-console" data-command="refresh_agents">📡 Refresh Agents</button>
+                            <button class="btn btn-console" data-command="show_stats">📈 Show Stats</button>
+                            <button class="btn btn-console" data-command="monitor_path">🧭 Monitor Path</button>
+                            <button class="btn btn-console" data-command="clear_logs">🧹 Clear Logs</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Container -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal glass-card" id="modal">
+            <div class="modal-header">
+                <h2 id="modalTitle">Modal Title</h2>
+                <button class="modal-close" id="modalClose">✕</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic content -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="modalCancelBtn">Cancel</button>
+                <button class="btn btn-primary" id="modalConfirmBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
